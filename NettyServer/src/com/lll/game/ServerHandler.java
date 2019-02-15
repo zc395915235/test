@@ -48,7 +48,8 @@ public class ServerHandler extends ChannelInboundHandlerAdapter {
 		byte[] req = new byte[buf.readableBytes()];
 		buf.readBytes(req);
 		String body = new String(req, "UTF-8");
-
+		//String body = (String)msg;
+		String rStr = "123adbÄãºÃaa..." ;
 		for (Map.Entry<ChannelId,ChannelHandlerContext> entry : ApplicationContext.onlineUsers.entrySet()) {
 			
 			ChannelHandlerContext c = entry.getValue();
@@ -56,8 +57,10 @@ public class ServerHandler extends ChannelInboundHandlerAdapter {
 			SubscribeReq resq = new SubscribeReq();
 
 			log.info("Ïò"+c.channel().id()+"·¢ËÍ"+ body );
-			ByteBuf resp = Unpooled.copiedBuffer(body.getBytes());
-			c.writeAndFlush(resp);
+			rStr +=c.channel().id();
+			//rStr = new String(rStr.getBytes(), "UTF-8");
+			//ByteBuf resp = Unpooled.copiedBuffer(rStr.getBytes());
+			c.writeAndFlush(rStr);
 		}		
 		
 	}

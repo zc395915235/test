@@ -1,5 +1,7 @@
 package com.lll.game;
  
+import java.nio.charset.Charset;
+
 import org.apache.commons.logging.Log;
 
 import org.apache.commons.logging.LogFactory;
@@ -9,11 +11,15 @@ import com.Impl.ServerConfigImpl;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture; 
 import io.netty.channel.ChannelInitializer; 
-import io.netty.channel.ChannelOption; 
+import io.netty.channel.ChannelOption;
+import io.netty.channel.ChannelPipeline;
 import io.netty.channel.EventLoopGroup; 
 import io.netty.channel.nio.NioEventLoopGroup; 
 import io.netty.channel.socket.SocketChannel; 
 import io.netty.channel.socket.nio.NioServerSocketChannel;
+import io.netty.handler.codec.LineBasedFrameDecoder;
+import io.netty.handler.codec.string.StringDecoder;
+import io.netty.handler.codec.string.StringEncoder;
 
 
 
@@ -35,8 +41,14 @@ public class HttpServer implements ServerConfigImpl {
             b.group(bossGroup, workerGroup).channel(NioServerSocketChannel.class)
                     .childHandler(new ChannelInitializer<SocketChannel>() {
                                 @Override
-                                public void initChannel(SocketChannel ch) throws Exception {
-                                	ch.pipeline().addLast(new ServerHandler());
+                                public void initChannel(SocketChannel e) throws Exception {
+//                                   //字符串类解析
+                            		//e.pipeline().addLast(new LineBasedFrameDecoder(1024));
+                            		//设置解码为UTF-8
+                            		//e.pipeline().addLast(new StringDecoder(Charset.forName("utf-8")));
+                            		//设置编码为UTF-8
+                            		e.pipeline().addLast(new StringEncoder(Charset.forName("utf-8")));
+                                	e.pipeline().addLast(new ServerHandler());
                                 }
                             }).option(ChannelOption.SO_BACKLOG, 128) //最大客户端连接数为128
                     .childOption(ChannelOption.SO_KEEPALIVE, true);
